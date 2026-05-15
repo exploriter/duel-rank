@@ -2,8 +2,8 @@
  * Validation utilities for form inputs and data integrity
  */
 
-import type { List, Item } from '../types'
-import { VALIDATION_MESSAGES } from '../constants'
+import type {List, Item} from '../types'
+import {VALIDATION_MESSAGES} from '../constants'
 
 /**
  * Validates a new item name against existing items
@@ -12,21 +12,21 @@ import { VALIDATION_MESSAGES } from '../constants'
  * @returns Validation result with error message if invalid
  */
 export function validateItemName(label: string, existingItems: Item[]): { isValid: boolean; error?: string } {
-  const trimmedLabel = label.trim()
-  
-  if (!trimmedLabel) {
-    return { isValid: false, error: VALIDATION_MESSAGES.EMPTY_ITEM }
-  }
-  
-  const isDuplicate = existingItems.some(item => 
-    item.label.toLowerCase() === trimmedLabel.toLowerCase()
-  )
-  
-  if (isDuplicate) {
-    return { isValid: false, error: VALIDATION_MESSAGES.DUPLICATE_ITEM }
-  }
-  
-  return { isValid: true }
+   const trimmedLabel = label.trim()
+
+   if (!trimmedLabel) {
+      return {isValid: false, error: VALIDATION_MESSAGES.EMPTY_ITEM}
+   }
+
+   const isDuplicate = existingItems.some(item =>
+      item.label.toLowerCase() === trimmedLabel.toLowerCase()
+   )
+
+   if (isDuplicate) {
+      return {isValid: false, error: VALIDATION_MESSAGES.DUPLICATE_ITEM}
+   }
+
+   return {isValid: true}
 }
 
 /**
@@ -36,21 +36,21 @@ export function validateItemName(label: string, existingItems: Item[]): { isVali
  * @returns Validation result with error message if invalid
  */
 export function validateListName(name: string, existingLists: List[]): { isValid: boolean; error?: string } {
-  const trimmedName = name.trim()
-  
-  if (!trimmedName) {
-    return { isValid: false, error: VALIDATION_MESSAGES.EMPTY_LIST }
-  }
-  
-  const isDuplicate = existingLists.some(list => 
-    list.name.toLowerCase() === trimmedName.toLowerCase()
-  )
-  
-  if (isDuplicate) {
-    return { isValid: false, error: VALIDATION_MESSAGES.DUPLICATE_LIST }
-  }
-  
-  return { isValid: true }
+   const trimmedName = name.trim()
+
+   if (!trimmedName) {
+      return {isValid: false, error: VALIDATION_MESSAGES.EMPTY_LIST}
+   }
+
+   const isDuplicate = existingLists.some(list =>
+      list.name.toLowerCase() === trimmedName.toLowerCase()
+   )
+
+   if (isDuplicate) {
+      return {isValid: false, error: VALIDATION_MESSAGES.DUPLICATE_LIST}
+   }
+
+   return {isValid: true}
 }
 
 /**
@@ -59,5 +59,5 @@ export function validateListName(name: string, existingLists: List[]): { isValid
  * @returns True if list has at least 2 items
  */
 export function validateListForComparison(items: Item[]): boolean {
-  return items.length >= 2
+   return items.length >= 2
 }

@@ -8,8 +8,8 @@
  * @returns Number of completed comparisons
  */
 export function getCompletedComparisons(list: { games?: any[] }): number {
-  if (!list?.games) return 0
-  return list.games.filter((g: any) => g.winner && !g.skipped).length
+   if (!list?.games) return 0
+   return list.games.filter((g: any) => g.winner && !g.skipped).length
 }
 
 /**
@@ -18,5 +18,5 @@ export function getCompletedComparisons(list: { games?: any[] }): number {
  * @returns Number of completed comparisons
  */
 export function getCompletedComparisonsFromLog(logEntries: readonly string[]): number {
-  return logEntries.filter(entry => !entry.includes('skipped')).length
+   return logEntries.filter(entry => !entry.includes('skipped')).length
 }

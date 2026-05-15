@@ -11,30 +11,31 @@
 <template>
   <div class="space-y-8">
     <!-- Comparison Header -->
-    <ComparisonHeader />
+    <ComparisonHeader/>
 
     <!-- Progress Display -->
-    <ComparisonProgress 
-      :stats="stats"
-      :remaining-pairs="remainingPairs"
-      :refining="refining"
-      :has-any-comparisons="hasAnyComparisons"
-      :is-comparison-complete="isComparisonComplete"
-      :has-workable-ranking="hasWorkableRanking"
-      @start-refining="startRefining"
-      @continue-ranking="continueRanking"
+    <ComparisonProgress
+        :stats="stats"
+        :remaining-pairs="remainingPairs"
+        :refining="refining"
+        :has-any-comparisons="hasAnyComparisons"
+        :is-comparison-complete="isComparisonComplete"
+        :has-workable-ranking="hasWorkableRanking"
+        @start-refining="startRefining"
+        @continue-ranking="continueRanking"
     />
 
     <!-- MAIN COMPARISON SECTION - Front and Center, right after header -->
-    <div v-if="currentGame" class="bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-800/15 inset-ring inset-ring-white rounded-lg px-10 py-14">
+    <div v-if="currentGame"
+         class="bg-gradient-to-r from-indigo-50 to-violet-50 border border-indigo-800/15 inset-ring inset-ring-white rounded-lg px-10 py-14">
       <div class="max-w-4xl mx-auto">
-        <ComparisonChoice 
-          :game="currentGame"
-          :get-label="labelFor"
-          :can-undo="canUndo"
-          @choose="choose"
-          @skip="skip"
-          @undo="undoLastComparisonWithConfirmation"
+        <ComparisonChoice
+            :game="currentGame"
+            :get-label="labelFor"
+            :can-undo="canUndo"
+            @choose="choose"
+            @skip="skip"
+            @undo="undoLastComparisonWithConfirmation"
         />
       </div>
     </div>
@@ -48,13 +49,13 @@
         </div>
         <!-- Comparison Log - Full Width, Prominent Position -->
         <div class="mb-8">
-          <ComparisonLog 
-            :log="log" 
-            :can-undo="canUndo"
-            :can-undo-comparison="canUndoComparison"
-            :items="list.items"
-            @undo="undoLastComparisonWithConfirmation"
-            @undo-comparison="undoComparisonWithConfirmation"
+          <ComparisonLog
+              :log="log"
+              :can-undo="canUndo"
+              :can-undo-comparison="canUndoComparison"
+              :items="list.items"
+              @undo="undoLastComparisonWithConfirmation"
+              @undo-comparison="undoComparisonWithConfirmation"
           />
         </div>
 
@@ -62,11 +63,11 @@
           <!-- Left Column: Rankings -->
           <div class="space-y-6">
             <!-- Enhanced Rankings Display -->
-            <ComparisonRankingsList 
-              :ranking="ranking"
-              :list="list"
-              :get-label="labelFor"
-              :is-directly-confirmed="isDirectlyConfirmed"
+            <ComparisonRankingsList
+                :ranking="ranking"
+                :list="list"
+                :get-label="labelFor"
+                :is-directly-confirmed="isDirectlyConfirmed"
             />
           </div>
 
@@ -74,9 +75,9 @@
           <div class="space-y-6">
             <!-- Comparison History Visualization -->
             <ComparisonHistoryVisualization
-              :games="list.games"
-              :items="list.items"
-              :get-label="labelFor"
+                :games="list.games"
+                :items="list.items"
+                :get-label="labelFor"
             />
           </div>
         </div>
@@ -86,22 +87,22 @@
 
   <!-- Confirmation Modal -->
   <ConfirmationModal
-    :is-open="confirmationState.isOpen"
-    :type="confirmationState.type"
-    :title="confirmationState.title"
-    :subtitle="confirmationState.subtitle"
-    :message="confirmationState.message"
-    :confirm-text="confirmationState.confirmText"
-    :cancel-text="confirmationState.cancelText"
-    @confirm="handleConfirm"
-    @dismiss="handleCancel"
+      :is-open="confirmationState.isOpen"
+      :type="confirmationState.type"
+      :title="confirmationState.title"
+      :subtitle="confirmationState.subtitle"
+      :message="confirmationState.message"
+      :confirm-text="confirmationState.confirmText"
+      :cancel-text="confirmationState.cancelText"
+      @confirm="handleConfirm"
+      @dismiss="handleCancel"
   />
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, nextTick } from 'vue'
-import { useComparison } from '../composables/useComparison'
-import { useConfirmation } from '../composables/useConfirmation'
+import {onMounted, onUnmounted, nextTick} from 'vue'
+import {useComparison} from '../composables/useComparison'
+import {useConfirmation} from '../composables/useConfirmation'
 import ComparisonHeader from './ComparisonHeader.vue'
 import ComparisonProgress from './ComparisonProgress.vue'
 import ComparisonChoice from './ComparisonChoice.vue'
@@ -148,7 +149,7 @@ const continueRanking = () => {
 }
 
 // Confirmation modal
-const { confirmationState, showConfirmation, handleConfirm, handleCancel } = useConfirmation()
+const {confirmationState, showConfirmation, handleConfirm, handleCancel} = useConfirmation()
 
 // Wrapper functions for undo operations with confirmation
 const undoLastComparisonWithConfirmation = async () => {
@@ -160,7 +161,7 @@ const undoLastComparisonWithConfirmation = async () => {
     confirmText: 'Undo Comparison',
     cancelText: 'Keep Comparison'
   })
-  
+
   if (confirmed) {
     undoLastComparison()
   }
@@ -175,7 +176,7 @@ const undoComparisonWithConfirmation = async (gameId: string) => {
     confirmText: 'Undo Comparison',
     cancelText: 'Keep Comparison'
   })
-  
+
   if (confirmed) {
     undoComparison(gameId)
   }
@@ -185,11 +186,11 @@ const undoComparisonWithConfirmation = async (gameId: string) => {
 const handleKeyDown = (event: KeyboardEvent) => {
   // Only handle shortcuts when we have a current game
   if (!currentGame.value) return
-  
+
   // Prevent shortcuts when typing in inputs
   const target = event.target as HTMLElement
   if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
-  
+
   switch (event.key.toLowerCase()) {
     case 'a':
     case '1':

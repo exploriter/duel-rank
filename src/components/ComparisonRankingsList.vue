@@ -12,34 +12,34 @@
   <div class="p-6 border border-gray-300 rounded-xl bg-white">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-gray-800 flex items-center">Live Ranking</h2>
-      
+
       <div class="flex items-center space-x-4">
         <!-- Export Menu -->
-        <ExportMenu 
-          :list="list"
-          :get-label-fn="getLabel"
+        <ExportMenu
+            :list="list"
+            :get-label-fn="getLabel"
         />
       </div>
     </div>
 
     <!-- Rankings Container -->
     <div class="space-y-2">
-      <TransitionGroup 
-        name="ranking" 
-        tag="div" 
-        class="space-y-4"
-        appear
+      <TransitionGroup
+          name="ranking"
+          tag="div"
+          class="space-y-4"
+          appear
       >
         <div
-          v-for="(entry, index) in ranking"
-          :key="entry.id"
-          class="group relative bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-lg p-4 hover:border-gray-300 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] hover:cursor-help"
+            v-for="(entry, index) in ranking"
+            :key="entry.id"
+            class="group relative bg-gradient-to-r from-gray-50 to-white border border-gray-200 rounded-lg p-4 hover:border-gray-300 hover:shadow-md transition-all duration-300 transform hover:scale-[1.02] hover:cursor-help"
         >
           <!-- Rank Badge -->
           <div class="absolute -left-2.5 -top-2.5 z-10">
-            <div 
-              class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white shadow-md inset-ring inset-ring-white/60"
-              :class="getRankBadgeClass(index)"
+            <div
+                class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold text-white shadow-md inset-ring inset-ring-white/60"
+                :class="getRankBadgeClass(index)"
             >
               {{ entry.rank }}
             </div>
@@ -53,23 +53,23 @@
                 <h3 class="font-semibold text-gray-800 truncate">
                   {{ getLabel(entry.id) }}
                 </h3>
-                
+
                 <!-- Confidence Badge -->
-                <div 
-                  class="px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap"
-                  :class="getConfidenceBadgeClass(entry.confidence)"
+                <div
+                    class="px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap"
+                    :class="getConfidenceBadgeClass(entry.confidence)"
                 >
                   {{ Math.round(entry.confidence * 100) }}% sure
                 </div>
               </div>
-              
+
               <!-- Confidence Bar -->
               <div class="mt-2 flex items-center space-x-2">
                 <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
-                    class="h-2 rounded-full transition-all duration-700 ease-out"
-                    :class="getConfidenceBarClass(entry.confidence)"
-                    :style="{ width: (entry.confidence * 100) + '%' }"
+                      class="h-2 rounded-full transition-all duration-700 ease-out"
+                      :class="getConfidenceBarClass(entry.confidence)"
+                      :style="{ width: (entry.confidence * 100) + '%' }"
                   ></div>
                 </div>
               </div>
@@ -79,9 +79,9 @@
             <div class="flex items-end justify-center space-x-3 ml-4">
               <!-- Direct Confirmation Status -->
               <div class="flex flex-col items-center">
-                <div 
-                  class="w-6 h-6 rounded-full flex items-center justify-center"
-                  :class="getStatusIconClass(entry.id)"
+                <div
+                    class="w-6 h-6 rounded-full flex items-center justify-center"
+                    :class="getStatusIconClass(entry.id)"
                 >
                   <span class="text-sm">
                     {{ getStatusIcon(entry.id) }}
@@ -95,21 +95,23 @@
               <!-- Ranking Strength Indicator -->
               <div class="flex flex-col items-center">
                 <div class="flex space-x-1">
-                  <div 
-                    v-for="i in 5" 
-                    :key="i"
-                    class="w-1 h-4 rounded-full"
-                    :class="i <= getRankingStrength(entry.confidence) ? 'bg-blue-500' : 'bg-gray-200'"
+                  <div
+                      v-for="i in 5"
+                      :key="i"
+                      class="w-1 h-4 rounded-full"
+                      :class="i <= getRankingStrength(entry.confidence) ? 'bg-blue-500' : 'bg-gray-200'"
                   ></div>
                 </div>
                 <div class="text-xs text-gray-500 mt-1">Strength</div>
               </div>
             </div>
           </div>
-          
+
           <!-- Tooltip on Hover -->
-          <div class="absolute left-1/2 bottom-full mb-2 transform -translate-x-1/2 bg-gray-800 text-white text-sm rounded-md px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20 shadow-xl">
-            Rank {{ entry.rank }} • {{ Math.round(entry.confidence * 100) }}% confidence • {{ getDetailedStatus(entry.id) }}
+          <div
+              class="absolute left-1/2 bottom-full mb-2 transform -translate-x-1/2 bg-gray-800 text-white text-sm rounded-md px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20 shadow-xl">
+            Rank {{ entry.rank }} • {{ Math.round(entry.confidence * 100) }}% confidence •
+            {{ getDetailedStatus(entry.id) }}
           </div>
         </div>
       </TransitionGroup>
@@ -145,8 +147,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { RankingEntry, List } from '../types'
+import {computed} from 'vue'
+import type {RankingEntry, List} from '../types'
 import ExportMenu from './ExportMenu.vue'
 
 /**
@@ -225,9 +227,9 @@ const getStatusIcon = (id: string): string => {
  * Get status icon CSS class
  */
 const getStatusIconClass = (id: string): string => {
-  return props.isDirectlyConfirmed(id) 
-    ? 'bg-green-200 text-green-700'
-    : 'bg-yellow-200 text-yellow-700'
+  return props.isDirectlyConfirmed(id)
+      ? 'bg-green-200 text-green-700'
+      : 'bg-yellow-200 text-yellow-700'
 }
 
 /**
@@ -241,9 +243,9 @@ const getStatusLabel = (id: string): string => {
  * Get detailed status for tooltip
  */
 const getDetailedStatus = (id: string): string => {
-  return props.isDirectlyConfirmed(id) 
-    ? 'Position confirmed by direct comparisons'
-    : 'Position inferred from other comparisons'
+  return props.isDirectlyConfirmed(id)
+      ? 'Position confirmed by direct comparisons'
+      : 'Position inferred from other comparisons'
 }
 
 /**
