@@ -27,8 +27,12 @@ import type { Item, Game, List, RankingEntry } from './types'
 export function getAllItemPairs(items: Item[]): [string, string][] {
     const pairs: [string, string][] = []
     for (let i = 0; i < items.length; i++) {
+        const itemA = items[i]
+        if (!itemA) continue
         for (let j = i + 1; j < items.length; j++) {
-            pairs.push([items[i].id, items[j].id])
+            const itemB = items[j]
+            if (!itemB) continue
+            pairs.push([itemA.id, itemB.id])
         }
     }
     return pairs
@@ -56,8 +60,9 @@ export function buildComparisonGraph(games: Game[]): Record<string, Set<string>>
         if (!game.winner || game.skipped) continue
         
         const loser = game.itemA === game.winner ? game.itemB : game.itemA
-        if (!graph[game.winner]) graph[game.winner] = new Set()
-        graph[game.winner].add(loser)
+        const winnerEdges = graph[game.winner] ?? new Set<string>()
+        winnerEdges.add(loser)
+        graph[game.winner] = winnerEdges
     }
     
     // Step 2: Collect all items that have participated in games
@@ -69,7 +74,7 @@ export function buildComparisonGraph(games: Game[]): Record<string, Set<string>>
     
     // Step 3: Initialize empty sets for items that haven't won any games
     for (const item of allItems) {
-        if (!graph[item]) graph[item] = new Set()
+        graph[item] ??= new Set()
     }
     
     // Step 4: Compute transitive closure using Floyd-Warshall algorithm
@@ -77,10 +82,10 @@ export function buildComparisonGraph(games: Game[]): Record<string, Set<string>>
     for (const k of allItems) {
         for (const i of allItems) {
             // If item i beats item k
-            if (graph[i].has(k)) {
+            if (graph[i]?.has(k)) {
                 // Then item i also beats everything that k beats
-                for (const j of graph[k]) {
-                    graph[i].add(j)
+                for (const j of graph[k] ?? []) {
+                    graph[i]?.add(j)
                 }
             }
         }
@@ -101,7 +106,7 @@ export function buildComparisonGraph(games: Game[]): Record<string, Set<string>>
  * @returns True if relationship between a and b is known
  */
 export function isResolved(graph: Record<string, Set<string>>, a: string, b: string): boolean {
-    return graph[a]?.has(b) || graph[b]?.has(a)
+    return Boolean(graph[a]?.has(b) || graph[b]?.has(a))
 }
 
 
@@ -195,8 +200,8 @@ export function calculateRanking(list: List): RankingEntry[] {
     
     while (remaining.size > 0) {
         // Find all items with minimum in-degree among remaining items
-        const minInDegree = Math.min(...Array.from(remaining).map(id => inDegree[id]))
-        const candidates = Array.from(remaining).filter(id => inDegree[id] === minInDegree)
+        const minInDegree = Math.min(...Array.from(remaining).map(id => inDegree[id] ?? 0))
+        const candidates = Array.from(remaining).filter(id => (inDegree[id] ?? 0) === minInDegree)
         
         // If multiple candidates, sort by win count (descending), then by loss count (ascending)
         candidates.sort((a, b) => {
@@ -211,6 +216,7 @@ export function calculateRanking(list: List): RankingEntry[] {
         })
         
         const next = candidates[0]
+        if (!next) break
         result.push(next)
         remaining.delete(next)
         
@@ -219,7 +225,7 @@ export function calculateRanking(list: List): RankingEntry[] {
             if (game.winner === next && !game.skipped) {
                 const loser = game.itemA === next ? game.itemB : game.itemA
                 if (remaining.has(loser)) {
-                    inDegree[loser] = Math.max(0, inDegree[loser] - 1)
+                    inDegree[loser] = Math.max(0, (inDegree[loser] ?? 0) - 1)
                 }
             }
         }
@@ -231,4 +237,3 @@ export function calculateRanking(list: List): RankingEntry[] {
         confidence: computeConfidence(id, graph, ids),
     }))
 }
-

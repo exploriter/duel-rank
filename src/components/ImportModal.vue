@@ -331,8 +331,9 @@ const parseText = (text: string): string[] => {
   let items = text.split(/\r?\n/)
   
   // If we only have one line, try comma separation
-  if (items.length === 1 && items[0].includes(',')) {
-    items = items[0].split(',')
+  const firstItem = items[0]
+  if (items.length === 1 && firstItem?.includes(',')) {
+    items = firstItem.split(',')
   }
   
   return items
@@ -359,8 +360,9 @@ const isValidItem = (item: string): boolean => {
  */
 const handleFileDrop = (event: DragEvent) => {
   const files = event.dataTransfer?.files
-  if (files && files.length > 0) {
-    processFile(files[0])
+  const file = files?.[0]
+  if (file) {
+    processFile(file)
   }
 }
 
@@ -370,8 +372,9 @@ const handleFileDrop = (event: DragEvent) => {
 const handleFileSelect = (event: Event) => {
   const target = event.target as HTMLInputElement
   const files = target.files
-  if (files && files.length > 0) {
-    processFile(files[0])
+  const file = files?.[0]
+  if (file) {
+    processFile(file)
   }
 }
 

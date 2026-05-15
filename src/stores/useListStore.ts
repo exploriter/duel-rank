@@ -43,7 +43,7 @@ export const useListStore = defineStore('list', {
                 return createEmptyList('No List')
             }
             // Find active list or fallback to first list
-            const list = state.lists.find(l => l.id === state.activeListId) ?? state.lists[0]
+            const list = state.lists.find(l => l.id === state.activeListId) ?? state.lists[0] ?? createEmptyList('No List')
             // Ensure backwards compatibility for lists without log property
             if (!list.log) {
                 list.log = []
@@ -86,8 +86,9 @@ export const useListStore = defineStore('list', {
             // Clean up refining state for deleted list
             delete this.refiningStates[id]
             if (this.activeListId === id) {
-                if (this.lists.length > 0) {
-                    this.activeListId = this.lists[0].id
+                const firstList = this.lists[0]
+                if (firstList) {
+                    this.activeListId = firstList.id
                 } else {
                     this.activeListId = ''
                 }
@@ -95,8 +96,9 @@ export const useListStore = defineStore('list', {
         },
         resetList() {
             const index = this.lists.findIndex(l => l.id === this.activeListId)
-            if (index !== -1) {
-                const name = this.lists[index].name
+            const list = this.lists[index]
+            if (list) {
+                const name = list.name
                 const newList = createEmptyList(name)
                 this.lists[index] = newList
                 this.activeListId = newList.id
@@ -222,6 +224,7 @@ export const useListStore = defineStore('list', {
             if (actionIndex === -1) return false
             
             const action = this.actionHistory[actionIndex]
+            if (!action) return false
             const list = this.list
             
             if (action.previousState) {

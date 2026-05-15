@@ -108,11 +108,12 @@ export function exportAsMarkdown(list: List, getLabelFn: (id: string) => string)
   })
   
   // Additional details
-  if (ranking.length > 0) {
+  const highestConfidence = ranking[0]
+  const lowestConfidence = ranking[ranking.length - 1]
+  if (highestConfidence && lowestConfidence) {
     md += '\n## Details\n\n'
-    md += `**Highest Confidence:** ${(ranking as any)[0].label} (${Math.round(ranking[0].confidence * 100)}%)\n\n`
+    md += `**Highest Confidence:** ${(highestConfidence as any).label} (${Math.round(highestConfidence.confidence * 100)}%)\n\n`
     
-    const lowestConfidence = ranking[ranking.length - 1]
     md += `**Lowest Confidence:** ${(lowestConfidence as any).label} (${Math.round(lowestConfidence.confidence * 100)}%)\n\n`
   }
   

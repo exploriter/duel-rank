@@ -338,13 +338,21 @@ const itemStats = computed(() => {
   props.games.forEach(game => {
     if (game.winner && !game.skipped) {
       const loser = game.itemA === game.winner ? game.itemB : game.itemA
-      stats[game.winner].wins++
-      stats[loser].losses++
-      stats[game.winner].comparisons++
-      stats[loser].comparisons++
+      const winnerStats = stats[game.winner]
+      const loserStats = stats[loser]
+      if (!winnerStats || !loserStats) return
+
+      winnerStats.wins++
+      loserStats.losses++
+      winnerStats.comparisons++
+      loserStats.comparisons++
     } else if (game.skipped) {
-      stats[game.itemA].comparisons++
-      stats[game.itemB].comparisons++
+      const itemAStats = stats[game.itemA]
+      const itemBStats = stats[game.itemB]
+      if (!itemAStats || !itemBStats) return
+
+      itemAStats.comparisons++
+      itemBStats.comparisons++
     }
   })
   
@@ -557,7 +565,10 @@ const wrapText = (text: string, maxCharsPerLine: number): string[] => {
   
   // Limit to 3 lines max
   if (lines.length > 3) {
-    lines[2] = lines[2].substring(0, maxCharsPerLine - 3) + '...'
+    const thirdLine = lines[2]
+    if (thirdLine) {
+      lines[2] = thirdLine.substring(0, maxCharsPerLine - 3) + '...'
+    }
     return lines.slice(0, 3)
   }
   

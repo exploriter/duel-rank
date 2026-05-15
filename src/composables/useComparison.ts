@@ -167,7 +167,10 @@ export function useComparison() {
       // But if no games exist yet, we need to start with the first pair
       if (list.value.games.length === 0) {
         // No games yet, just take the first pair
-        unresolvedPairs.push(pairs[0])
+        const firstPair = pairs[0]
+        if (firstPair) {
+          unresolvedPairs.push(firstPair)
+        }
       } else {
         // Use transitive closure to find unresolved pairs
         const graph = buildComparisonGraph(list.value.games)
